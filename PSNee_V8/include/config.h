@@ -2,10 +2,10 @@
 
 #ifdef ATmega328_168
 
-#define DATA_OUTPUT     DDRB |= (1<<0)
-#define DATA_INPUT      DDRB &= ~(1<<0)
-#define DATA_CLEAR      PORTB &= ~(1<<0)
-#define DATA_SET        PORTB |= (1<<0)
+#define DATA_OUTPUT     DDRB |= (1<<0)                               //It is an equivalence to "pinMode (8, OUTPUT);" Create a mask (1<<0) with the first bit at 1 b00000001, |= updates the DDRB register with the OR operator and the mask, DDRB bxxxxxxxx OR mask b00000001 = bxxxxxxx1
+#define DATA_INPUT      DDRB &= ~(1<<0)                              //It is an equivalence to "pinMode (8, INPUT);" Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110 , &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0
+#define DATA_CLEAR      PORTB &= ~(1<<0)                             //It is an equivalence to "digitalWrite(8, LOW);" Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110 , &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0
+#define DATA_SET        PORTB |= (1<<0)                              //It is an equivalence to "digitalWrite(8, HIGH))" Create a mask (1<<0) with the first bit at 1 b00000001, |= updates the PORTB register with the OR operator and the mask, PORTB bxxxxxxxx OR mask b00000001 = bxxxxxxx1
 #define WFCK_OUTPUT     DDRB |= (1<<1)
 #define WFCK_INPUT      DDRB &= ~(1<<1)
 #define WFCK_CLEAR      PORTB &= ~(1<<1)
@@ -14,7 +14,7 @@
 #define DX_CLEAR        PORTD &= ~(1<<4)
 #define DX_SET          PORTD |= (1<<4)
 
-#define SQCK_READ       (PIND & (1<<6))
+#define SQCK_READ       (PIND & (1<<6))                             //It is an equivalence to "digitalRead(6)" Create a mask (1<<6) with the six bit at 1 b00100000, compare the PINB register and the mask with the AND operator, and returns the result, PINB bxx1xxxxx AND mask b00100000 = 1, 
 #define SUBQ_READ       (PIND & (1<<7))
 #define WFCK_READ       (PINB & (1<<1))
 #define AX_READ         (PIND & (1<<2))
