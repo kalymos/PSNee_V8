@@ -20,19 +20,19 @@
 #define AX_READ         (PIND & (1<<2))
 #define AY_READ         (PIND & (1<<3))
 
-#define TIMER_INTERRUPT_ENABLE      TIMSK0 |= (1<<OCIE0A)
+#define TIMER_INTERRUPT_ENABLE      TIMSK0 |= (1<<OCIE0A)                       //TIMSK0 Timer/Counter Interrupt Mask Register,  OCIE0A: Timer/Counter0 Output Compare Match A Interrupt Enable
 #define TIMER_INTERRUPT_DISABLE     TIMSK0 &= ~(1<<OCIE0A)
-#define TIMER_TCNT_CLEAR            TCNT0 = 0x00
-#define TIMER_TIFR_CLEAR            TIFR0 |= (1<<OCF0A)
+#define TIMER_TCNT_CLEAR            TCNT0 = 0x00                                //TCNT0 Timer/Counter Register
+#define TIMER_TIFR_CLEAR            TIFR0 |= (1<<OCF0A)                         //TIFR0 – Timer/Counter 0 Interrupt Flag Register,  OCF0A: Timer/Counter 0 Output Compare A Match Flag
 
-#define AX_INTERRUPT_ENABLE         EIMSK = (1<<INT0)
+#define AX_INTERRUPT_ENABLE         EIMSK = (1<<INT0)                           //EIMSK – External Interrupt Mask Register,  INTF0: External Interrupt Flag 0
 #define AX_INTERRUPT_DISABLE        EIMSK &= ~(1<<INT0)
-#define AX_INTERRUPT_RISING         EICRA = (1<<ISC01)|(1<<ISC00)
+#define AX_INTERRUPT_RISING         EICRA = (1<<ISC01)|(1<<ISC00)               //EICRA – External Interrupt Control Register A, ISC01, ISC00: Interrupt Sense Control 0 Bit 1 and Bit 0
 #define AX_INTERRUPT_FALLING        EICRA = (1<<ISC01)
 
-#define AY_INTERRUPT_ENABLE         EIMSK = (1<<INT1)
+#define AY_INTERRUPT_ENABLE         EIMSK = (1<<INT1)                           //EIMSK – External Interrupt Mask Register,  INTF1: External Interrupt Flag 1
 #define AY_INTERRUPT_DISABLE        EIMSK &= ~(1<<INT1)
-#define AY_INTERRUPT_RISING         EICRA = (1<<ISC11)|(1<<ISC10)
+#define AY_INTERRUPT_RISING         EICRA = (1<<ISC11)|(1<<ISC10)               //EICRA – External Interrupt Control Register A, ISC11, ISC10: Interrupt Sense Control 1 Bit 1 and Bit 0
 #define AY_INTERRUPT_FALLING        EICRA = (1<<ISC11)
 
 #define SW_USE			PORTD |= (1<<5)
@@ -44,10 +44,10 @@
 
 void Init()
 {
-	TCNT0 = 0x00;
-	OCR0A = 159; 
-	TCCR0A |= (1<<WGM01);
-	TCCR0B |= (1<<CS00);
+	TCNT0 = 0x00;                                                          //TCNT0 – Timer/Counter Register
+	OCR0A = 159;                                                           //OCR0A – Output Compare Register A, 0x10011111, PWM?
+	TCCR0A |= (1<<WGM01);                                                  //TCCR0A – Timer/Counter Control Register A, WGM01: Waveform Generation Mode, Mode 2 CTC
+	TCCR0B |= (1<<CS00);                                                   //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O /(no prescaling)
 
 	#ifdef PATCH_SW
 	 SW_USE;
