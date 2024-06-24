@@ -1,10 +1,10 @@
 #pragma once
 
-#ifdef UC_ALL
+#ifdef SCPH_XXX1
     const char region[3] = {'a', 'a', 'a'};
 #endif
 
-#ifdef PAL_FAT
+#ifdef SCPH_XXX2
     const char region[3] = {'e', 'e', 'e'};
 #endif
 
