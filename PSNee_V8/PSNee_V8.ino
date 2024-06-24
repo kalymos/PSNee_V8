@@ -24,8 +24,8 @@
 //   If a BIOS checksum is specified, it is more important than the SCPH model number!
 //------------------------------------------------------------------------------------------------	
 
-//#define UC_ALL           // Use for all NTSC-U/C models. No BIOS patching needed.
-//#define PAL_FAT          // Use for all PAL FAT models. No BIOS patching needed.
+//#define SCPH_xxx1        // Use for all NTSC-U/C models. No BIOS patching needed. 
+//#define SCPH_XXX2        // Use for all PAL FAT models. No BIOS patching needed. 
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
 //#define SCPH_100         // DX - D0, AX - A7. BIOS ver. 4.3j, CRC F2AF798B
