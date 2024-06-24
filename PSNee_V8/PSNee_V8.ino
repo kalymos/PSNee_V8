@@ -14,8 +14,18 @@
 //------------------------------------------------------------------------------------------------
 
 #define ATmega328_168      // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
-/*  PinVCC-3.5v, PinGND-GND, Pin2-BIOS AX, Pin3-BIOS AY, Pin4-BIOS DX, Pin5-Switch*(optional),
-    Pin6-SQCK, Pin7-SUBQ, Pin8-DATA, Pin9-GATE_WFCK, PinRST-RESET*(Only for JAP_FAT)  */
+
+/*  PinVCC - 3.5v
+    PinGND - GND
+    Pin2   - BIOS AX
+    Pin3   - BIOS AY
+    Pin4   - BIOS DX
+    Pin5   - Switch*(optional)
+    Pin6   - SQCK
+    Pin7   - SUBQ
+    Pin8   - DATA
+    Pin9   - GATE_WFCK
+    PinRST - RESET*(Only for JAP_FAT)  */
 
 //------------------------------------------------------------------------------------------------
 //                         Select your console
