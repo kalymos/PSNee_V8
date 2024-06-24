@@ -21,7 +21,7 @@
 #define AY_READ         (PIND & (1<<3))
 
 #define TIMER_INTERRUPT_ENABLE      TIMSK0 |= (1<<OCIE0A)                       //TIMSK0 Timer/Counter Interrupt Mask Register,  OCIE0A: Timer/Counter0 Output Compare Match A Interrupt Enable
-#define TIMER_INTERRUPT_DISABLE     TIMSK0 &= ~(1<<OCIE0A)
+#define TIMER_INTERRUPT_DISABLE     TIMSK0 &= ~(1<<OCIE0A)                       
 #define TIMER_TCNT_CLEAR            TCNT0 = 0x00                                //TCNT0 Timer/Counter Register
 #define TIMER_TIFR_CLEAR            TIFR0 |= (1<<OCF0A)                         //TIFR0 – Timer/Counter 0 Interrupt Flag Register,  OCF0A: Timer/Counter 0 Output Compare A Match Flag
 
