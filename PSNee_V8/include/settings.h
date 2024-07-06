@@ -1,5 +1,23 @@
 #pragma once
 
+/*
+ The _delay_us function uses loops to generate an approximate delay for the specified number of microseconds.
+ It calculates the number of clock cycles required to achieve the requested delay and loops the corresponding number of times.
+ 
+ The temporal precision of _delay_us depends on the microcontroller's clock frequency (F_CPU).
+ For the ATmega328 operating at a typical frequency of 16 MHz, here are some details on the precision.
+
+ Clock Frequency: F_CPU must be defined correctly before using the function. For an ATmega328 operating at 16 MHz:
+    1 clock cycle = 1 / 16,000,000 s ≈ 62.5 ns
+    1 µs ≈ 16 clock cycles
+
+   HOLD _delay_us(2.75)    = 44  clock cycles
+   PATCHING _delay_us(0.2) = 3,2 clock cycles
+
+
+
+*/
+
 #ifdef UC_ALL
     const char region[3] = {'a', 'a', 'a'};
 #endif
@@ -60,10 +78,10 @@
 #endif
 
 #ifdef SCPH_3000
-#define BIOS_PATCH
-#define HIGH_PATCH
-#define DOUBLE_PATCH
-#define CHECKPOINT 83000
+#define BIOS_PATCH                                                    
+#define HIGH_PATCH                                                    
+#define DOUBLE_PATCH 
+#define CHECKPOINT 83000      
 #define TRIGGER 60
 #define HOLD _delay_us(2.75)
 #define PATCHING _delay_us(0.1)

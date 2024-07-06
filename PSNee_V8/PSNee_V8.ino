@@ -1,6 +1,8 @@
 // PSNee V8 - Ultimate PSX unlocker.   /ver. 8.0.1
 // Developed by brill & postal2201, based on PSNee V7 open source project.   /Emu-land.net
 
+
+//Configuring the clock speed and associated registers.  F_CPU / (TCCR0B |= (1<<CS00) *(OCR0A = 159 +1) = 16000000 /(0 * (160)) = 100KHz
 #define F_CPU 16000000L
 #include <stdint.h>
 #include <stdbool.h>
@@ -50,25 +52,32 @@
 #include "settings.h"
 #include "patching.h"
 
+
+//Creation of the different variables for the counter
 volatile uint8_t count_isr = 0;
 volatile uint32_t microsec = 0;
 volatile uint16_t millisec = 0;
 
+//Initializing the flag for the pin wfck
 bool wfck_mode;
 
-const int16_t delay_between_bits = 4000; 
-const int16_t delay_between_injections = 90;
+//Initializing values ​​for region code injection timing
+const int16_t delay_between_bits = 4000;                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100)
+const int16_t delay_between_injections = 90;                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow.
 
+// borrowed from AttyNee. Bitmagic to get to the SCEX strings stored in flash (because Harvard architecture)
+// Read a specific bit from an array of bytes
 uint8_t readBit(uint8_t index, const uint8_t * ByteSet)
 {
-	return !!(ByteSet[index / 8] & (1 << (index % 8)));
+	return !!(ByteSet[index / 8] & (1 << (index % 8)));       // Return true if the specified bit is set in ByteSet[index]
 }
 
+// Interrupt Service Routine (ISR) for TIMER0 compare match A vector
 ISR(TIMER0_COMPA_vect)
 {
-	microsec += 10;
-	count_isr++;
-	if (count_isr == 100)
+	microsec += 10;                                           // Increment microseconds by 10 for timing purposes
+	count_isr++;                                              // Increment ISR count
+	if (count_isr == 100)                                     // If ISR count reaches 100, increment milliseconds and reset ISR count
 	{
 		millisec++;
 		count_isr = 0;
@@ -91,6 +100,7 @@ void Timer_Stop()
 	millisec = 0;
 }
 
+// Static arrays storing SCEX data for different regions
 void inject_SCEX(const char region)
 {
 	static const uint8_t SCEEData[] = {
@@ -120,39 +130,46 @@ void inject_SCEX(const char region)
 		0b00000010
 	};
 
+	// pinMode(data, OUTPUT) is used more than it has to be but that's fine. 
+	
+	// Iterate through 44 bits of SCEX data
 	uint8_t bit_counter;
 	for (bit_counter = 0; bit_counter < 44; bit_counter++)
 	{
+		// Check if the current bit is 0
 		if (readBit(bit_counter, region == 'e' ? SCEEData : region == 'a' ? SCEAData : SCEIData) == 0)
 		{
-			DATA_OUTPUT;
-			DATA_CLEAR;
-			_delay_us(delay_between_bits);
+			DATA_OUTPUT;                                         // Set DATA output
+			DATA_CLEAR;                                          // Set DATA pin low
+			_delay_us(delay_between_bits);                       // Wait for specified delay between bits
 		}
 
 		else
 		{
-			if (wfck_mode)
+			// modulate DATA pin based on WFCK_READ
+			if (wfck_mode)                                      // If wfck_mode is true(pu22mode)
 			{
-				DATA_OUTPUT;
-				Timer_Start();
+				DATA_OUTPUT;                                    // Set DATA output
+				Timer_Start();                                  // Start timer for precise timing
 			 do
 			 {
+				 // read wfck pin
 				if(WFCK_READ)
 				{
-					DATA_SET;
+					DATA_SET;                                   // Set DATA pin high
 				}
 
 				else
 				{
-					DATA_CLEAR;
+					DATA_CLEAR;                                 // Set DATA pin low
 				}
 			 }
 
 			while (microsec < delay_between_bits);
-			Timer_Stop();
+			Timer_Stop();                                       // Stop timer
 			}
-
+            
+            // PU-18 or lower mode
 			else
 			{
 				DATA_INPUT;
@@ -161,6 +178,7 @@ void inject_SCEX(const char region)
 		}
 	}
 
+	// After injecting SCEX data, set DATA pin as output and clear (low)
 	DATA_OUTPUT;
 	DATA_CLEAR;
 	_delay_ms(delay_between_injections);
@@ -169,12 +187,13 @@ void inject_SCEX(const char region)
 int main()
 {
 	uint8_t hysteresis = 0;
-	uint8_t scbuf[12] = {0};
+	uint8_t scbuf[12] = {0};                                // SUBQ bit storage
 	uint16_t timeout_clock_counter = 0;
 	uint8_t bitbuf = 0;
 	uint8_t bitpos = 0;
-	uint8_t scpos = 0;
-	uint16_t highs = 0, lows = 0;
+	uint8_t scpos = 0;                                     // scbuf position
+	uint16_t highs = 0, lows = 0;                          //highs = 0,
+
 
 	#if !defined(UC_ALL) && !defined(PAL_FAT) && !defined(SCPH_103) && \
       !defined(SCPH_102) && !defined(SCPH_100) && !defined(SCPH_7000_9000) && \
@@ -210,6 +229,7 @@ int main()
 	 while (SQCK_READ == 0);
 	 while (WFCK_READ == 0); 
 	 }
+	 // wait for console power on and stable signals
 	#else
 	 while (SQCK_READ == 0);
 	 while (WFCK_READ == 0);
@@ -217,24 +237,33 @@ int main()
 
 	Timer_Start();
 	
+	  // Board detection
+  //
+  // GATE: __-----------------------  // this is a PU-7 .. PU-20 board!
+  //
+  // WFCK: __-_-_-_-_-_-_-_-_-_-_-_-  // this is a PU-22 or newer board!
+	
 	do
 	{
-		if (WFCK_READ == 1) highs++;
-		if (WFCK_READ == 0) lows++;
+		if (WFCK_READ == 1) highs++;          // pas util?
+		if (WFCK_READ == 0) lows++;           // good for ~5000 reads in 1s
 		_delay_us(200);
 	}
-	while (millisec < 1000);
+	while (millisec < 1000);                  // sample 1s
 
 	Timer_Stop();
+	
+	      // typical readouts
+  // PU-22: highs: 2449 lows: 2377
 
 	if (lows > 100)
 	{
-		wfck_mode = 1;
+		wfck_mode = 1;                       //flag pu22mode
 	}
 
 	else
 	{
-		wfck_mode = 0;
+		wfck_mode = 0;                       //flag oldmod
 	}
 
 	#ifdef LED_USE
@@ -243,49 +272,63 @@ int main()
 
 	while(1)
 	{
-		_delay_ms(1);
-		cli();
+		_delay_ms(1);                                           /* Start with a small delay, which can be necessary 
+                                                                |  in cases where the MCU loops too quickly and picks up the laster SUBQ trailing end
+																*/ 
+		// start critical section
+		cli();                                                     
+		
+		// Capture 8 bits for 12 runs > complete SUBQ transmission
 		do
 		{
 			for (bitpos = 0; bitpos < 8; bitpos++)
 			{
-				while (SQCK_READ != 0)
+				while (SQCK_READ != 0)                           // wait for clock to go low
 				{
-					timeout_clock_counter++;
-					if (timeout_clock_counter > 1000)
+					timeout_clock_counter++;                     // a timeout resets the 12 byte stream in case the PSX sends malformatted clock pulses, as happens on bootup
+					if (timeout_clock_counter > 1000)            
 					{
-						scpos = 0;
-						timeout_clock_counter = 0;
-						bitbuf = 0;
-						bitpos = 0;
+						scpos = 0;                               // Reset SUBQ packet stream
+						timeout_clock_counter = 0;               // Reset
+						bitbuf = 0;                              // Reset
+						bitpos = 0;                              // Reset
 						continue;
 					}
 				}
 				
-				while (SQCK_READ == 0);
+				while (SQCK_READ == 0);                          // Wait for clock to go high
 				
-				if(SUBQ_READ)
+				if(SUBQ_READ)                                    // If clock pin high
 				{
-					bitbuf |= 1 << bitpos;
+					bitbuf |= 1 << bitpos;                       // Set the bit at position bitpos in the bitbuf to 1. Using OR combined with a bit shift
 				}
 				
-				timeout_clock_counter = 0;
+				timeout_clock_counter = 0;                       // no problem with this bit
 			}
 
-			scbuf[scpos] = bitbuf;
+			scbuf[scpos] = bitbuf;                               // One byte done
 			scpos++;
 			bitbuf = 0;
 		}
 
-		while (scpos < 12);
-		sei();
+		while (scpos < 12);                                     // Repeat for all 12 bytes
+		// End critical section
+		sei();                                                  // End critical section
+		
+		/* Check if read head is in wobble area
+      |  We only want to unlock game discs (0x41) and only if the read head is in the outer TOC area.
+      |  We want to see a TOC sector repeatedly before injecting (helps with timing and marginal lasers).
+      |  All this logic is because we don't know if the HC-05 is actually processing a getSCEX() command.
+      |  Hysteresis is used because older drives exhibit more variation in read head positioning.
+      |  While the laser lens moves to correct for the error, they can pick up a few TOC sectors.
+      */
 
 		uint8_t isDataSector = (((scbuf[0] & 0x40) == 0x40) && (((scbuf[0] & 0x10) == 0) && ((scbuf[0] & 0x80) == 0)));
 
 		if (
-		(isDataSector && scbuf[1] == 0x00 && scbuf[6] == 0x00) && // [0] = 41 means psx game disk. the other 2 checks are garbage protection
-		(scbuf[2] == 0xA0 || scbuf[2] == 0xA1 || scbuf[2] == 0xA2 || // if [2] = A0, A1, A2 ..
-		(scbuf[2] == 0x01 && (scbuf[3] >= 0x98 || scbuf[3] <= 0x02))) // .. or = 01 but then [3] is either > 98 or < 02
+		(isDataSector && scbuf[1] == 0x00 && scbuf[6] == 0x00) &&                 // [0] = 41 means psx game disk. the other 2 checks are garbage protection
+		(scbuf[2] == 0xA0 || scbuf[2] == 0xA1 || scbuf[2] == 0xA2 ||              // if [2] = A0, A1, A2 ..
+		(scbuf[2] == 0x01 && (scbuf[3] >= 0x98 || scbuf[3] <= 0x02)))             // .. or = 01 but then [3] is either > 98 or < 02
 		)
 		{
 			hysteresis++;
@@ -293,42 +336,45 @@ int main()
 
 		else if (hysteresis > 0 && ((scbuf[0] == 0x01 || isDataSector) && (scbuf[1] == 0x00 /*|| scbuf[1] == 0x01*/ ) && scbuf[6] == 0x00))
 		{
-			hysteresis++;
+			hysteresis++;                                  // This CD has the wobble into CD-DA space. (started at 0x41, then went into 0x01)
 		}
 
 		else if (hysteresis > 0)
 		{
-			hysteresis--; 
+			hysteresis--;                                 // None of the above. Initial detection was noise. Decrease the counter.
 		}
-		
+		// hysteresis value "optimized" using very worn but working drive on ATmega328 @ 16Mhz
+		// should be fine on other MCUs and speeds, as the PSX dictates SUBQ rate
 		if (hysteresis >= 14)
 		{
+			// If the read head is still here after injection, resending should be quick.
+			// Hysteresis naturally goes to 0 otherwise (the read head moved).
 			hysteresis = 11;
 			
 			#ifdef LED_USE
 			 LED_ON;
 			#endif
 
-			DATA_OUTPUT;
-			DATA_CLEAR;
+			DATA_OUTPUT;                               // Set DATA pin output
+			DATA_CLEAR;                                // Set DATA pin pul down
 
-			if (!wfck_mode)
+			if (!wfck_mode)                           // If wfck_mode is fals (oldmode)
 			{
-				WFCK_OUTPUT;
-				WFCK_CLEAR;
+				WFCK_OUTPUT;                          // Set WFCK pin output
+				WFCK_CLEAR;                           // SET WFCK pin pul down
 			}
 			
-			_delay_ms(delay_between_injections);
+			_delay_ms(delay_between_injections);      // HC-05 waits for a bit of silence (pin low) before it begins decoding.
 
 			uint8_t scex;
-			for (scex = 0; scex < 2; scex++)
+			for (scex = 0; scex < 2; scex++)          // inject symbols now. 2 x 3 runs seems optimal to cover all boards
 			{
-				inject_SCEX(region[scex]);
+				inject_SCEX(region[scex]);            // If wfck_mode is fals (oldmode)
 			}
 
-			if (!wfck_mode)
+			if (!wfck_mode)                           // Set WFCK pin input
 			{
-				WFCK_INPUT; 
+				WFCK_INPUT;                           // Set DATA pin input
 			}
 
 			DATA_INPUT;
