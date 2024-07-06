@@ -14,9 +14,25 @@
    HOLD _delay_us(2.75)    = 44  clock cycles
    PATCHING _delay_us(0.2) = 3,2 clock cycles
 
-
-
 */
+
+//Initializing values ​​for region code injection timing
+#define delay_between_bits 4000                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100)
+#define delay_between_injections 90                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow.
+
+
+
+#if !defined(UC_ALL) && !defined(PAL_FAT) && !defined(SCPH_103) && \
+    !defined(SCPH_102) && !defined(SCPH_100) && !defined(SCPH_7000_9000) && \
+    !defined(SCPH_5500) && !defined(SCPH_3500_5000) && !defined(SCPH_3000) && \
+    !defined(SCPH_1000)
+ #error "Console not selected! Please uncoment #define with SCPH model number."
+#elif !(defined(UC_ALL) ^ defined(PAL_FAT) ^ defined(SCPH_103) ^ \
+      defined(SCPH_102) ^ defined(SCPH_100) ^ defined(SCPH_7000_9000) ^ \
+      defined(SCPH_5500) ^ defined(SCPH_3500_5000) ^ defined(SCPH_3000) ^ \
+      defined(SCPH_1000))
+ #error "May be selected only one console! Please check #define with SCPH model number."
+#endif
 
 #ifdef UC_ALL
     const char region[3] = {'a', 'a', 'a'};
