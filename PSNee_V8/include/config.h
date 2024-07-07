@@ -72,7 +72,7 @@
 
 
 
-/* Handling pins for BIOS patch
+// Handling pins for BIOS patch
 //BIOS patch pins input
 #define AX_INPUT        DDRD  &= ~(1<<DDD2)                             //INPUT     D2
 #define AY_INPUT        DDRD  &= ~(1<<DDD3)                             //INPUT     D3
@@ -86,7 +86,7 @@
 //Read pins for BIOS patch
 #define AX_READ         (PIND & (1<<PIND2))                             //Read D2
 #define AY_READ         (PIND & (1<<PIND3))                             //Read D3
-*/
+
 
 
 
