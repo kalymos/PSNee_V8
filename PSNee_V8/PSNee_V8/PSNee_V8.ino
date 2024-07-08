@@ -24,11 +24,11 @@
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
 //#define SCPH_100         // DX - D0, AX - A7. BIOS ver. 4.3j, CRC F2AF798B
-//#define SCPH_7000_9000   // DX - D0, AX - A7. BIOS ver. 4.0j, CRC EC541CD0
+#define SCPH_7000_9000   // DX - D0, AX - A7. BIOS ver. 4.0j, CRC EC541CD0
 //#define SCPH_5500        // DX - D0, AX - A5. BIOS ver. 3.0j, CRC FF3EEB8C
 //#define SCPH_3500_5000   // DX - D0, for 40-pin BIOS: AX - A4, for 32-pin BIOS: AX - A5. BIOS ver. 2.2j, CRC 24FC7E17 | 2.1j, CRC BC190209
 //#define SCPH_3000        // DX - D5, for 40-pin BIOS: AX - A6, AY - A7, for 32-pin BIOS: AX - A7, AY - A8. BIOS ver. 1.1j, CRC 3539DEF6
-#define SCPH_1000        // DX - D5, for 40-pin BIOS: AX - A6, AY - A7, for 32-pin BIOS: AX - A7, AY - A8. BIOS ver. 1.0j, CRC 3B601FC8
+//#define SCPH_1000        // DX - D5, for 40-pin BIOS: AX - A6, AY - A7, for 32-pin BIOS: AX - A7, AY - A8. BIOS ver. 1.0j, CRC 3B601FC8
 
 //------------------------------------------------------------------------------------------------
 //                         Options
@@ -47,6 +47,10 @@
 #include "patching.h"
 #include "finction.h"
 
+//Initializing values ​​for region code injection timing
+#define delay_between_bits 4000                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100) PU-23 PU-22 MAX 4250 MIN 3850
+#define delay_between_injections 90                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow. pu_23 pu-22 MAX 250 MIN 50
+#define hysteresis_max 14                             //pu-23 pu-22 min 5 max 200
 
 //Creation of the different variables for the counter
 volatile uint8_t count_isr = 0;
@@ -299,7 +303,7 @@ int main()
 		}
 		// hysteresis value "optimized" using very worn but working drive on ATmega328 @ 16Mhz
 		// should be fine on other MCUs and speeds, as the PSX dictates SUBQ rate
-		if (hysteresis >= 14)
+		if (hysteresis >= hysteresis_max)
 		{
 			// If the read head is still here after injection, resending should be quick.
 			// Hysteresis naturally goes to 0 otherwise (the read head moved).

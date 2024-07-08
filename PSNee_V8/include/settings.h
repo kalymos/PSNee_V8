@@ -16,10 +16,6 @@
 
 */
 
-//Initializing values ​​for region code injection timing
-#define delay_between_bits 4000                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100)
-#define delay_between_injections 90                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow.
-
 
 
 #if !defined(UC_ALL) && !defined(PAL_FAT) && !defined(SCPH_103) && \
