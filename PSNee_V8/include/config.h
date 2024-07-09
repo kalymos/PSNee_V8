@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #ifdef ATmega328_168
 
 #define F_CPU 16000000L
@@ -87,7 +89,22 @@
 #define AX_READ         (PIND & (1<<PIND2))                             //Read D2
 #define AY_READ         (PIND & (1<<PIND3))                             //Read D3
 
+void Init()
+{
+  TCNT0 = 0x00;                                                        
+  OCR0A = 159;                                                         //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+  TCCR0A |= (1<<WGM01);                                                //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+  TCCR0B |= (1<<CS00);                                                 /*TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+                                                                        | Waveform Generation Mode, Mode 2 CTC*/
+  #ifdef PATCH_SW
+   SW_USE;
+  #endif
 
+  LED_OUTPUT;
+  GLOBAL_INTERRUPT_ENABLE;
+  PIN_SQCK_INPUT;
+  PIN_SUBQ_INPUT;                              
+}
 
 
 

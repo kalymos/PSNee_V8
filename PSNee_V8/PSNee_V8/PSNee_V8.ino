@@ -19,8 +19,8 @@
 //   If a BIOS checksum is specified, it is more important than the SCPH model number!
 //------------------------------------------------------------------------------------------------	
 
-//#define UC_ALL           // Use for all NTSC-U/C models. No BIOS patching needed.
-//#define PAL_FAT          // Use for all PAL FAT models. No BIOS patching needed.
+//#define SCPH_xxx1           // Use for all NTSC-U/C models. No BIOS patching needed.
+//#define SCPH_xxx2          // Use for all PAL FAT models. No BIOS patching needed.
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
 //#define SCPH_100         // DX - D0, AX - A7. BIOS ver. 4.3j, CRC F2AF798B
@@ -48,17 +48,44 @@
 #include "finction.h"
 
 //Initializing values ​​for region code injection timing
-#define delay_between_bits 4000                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100) PU-23 PU-22 MAX 4250 MIN 3850
-#define delay_between_injections 90                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow. pu_23 pu-22 MAX 250 MIN 50
-#define hysteresis_max 14                             //pu-23 pu-22 min 5 max 200
+#define DELAY_BETWEEN_BITS 4000                       // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100) PU-23 PU-22 MAX 4250 MIN 3850
+#define DELAY_BETWEEN_INJECTIONS 90                   // PU-22+ work best with 80 to 100 (milliseconds)  72 in oldcrow. pu_23 pu-22 MAX 250 MIN 50
+#define HYSTERESIS_MAX 14                             //pu-23 pu-22 min 5 max 200
 
 //Creation of the different variables for the counter
 volatile uint8_t count_isr = 0;
 volatile uint32_t microsec = 0;
 volatile uint16_t millisec = 0;
 
-//Initializing the flag for the pin wfck
-bool wfck_mode = 0;
+//Flag initializing for automatic console generation selection 0 = old, 1 = pu-22 end  ++
+volatile boolean wfck_mode = 0;
+
+ISR(TIMER0_COMPA_vect)
+{
+  microsec += 10;                                           // Increment microseconds by 10 for timing purposes
+  count_isr++;                                              // Increment ISR count
+  if (count_isr == 100)                                     // If ISR count reaches 100, increment milliseconds and reset ISR count
+  {
+    millisec++;
+    count_isr = 0;
+  }
+}
+
+void Timer_Start()
+{
+  TIMER_TCNT_CLEAR;
+  TIMER_TIFR_CLEAR;
+  TIMER_INTERRUPT_ENABLE;
+}
+
+void Timer_Stop()
+{
+  TIMER_INTERRUPT_DISABLE;
+  TIMER_TCNT_CLEAR;
+  count_isr = 0;
+  microsec = 0;
+  millisec = 0;
+}
 
 // borrowed from AttyNee. Bitmagic to get to the SCEX strings stored in flash (because Harvard architecture)
 // Read a specific bit from an array of bytes
@@ -66,7 +93,6 @@ uint8_t readBit(uint8_t index, const uint8_t * ByteSet)
 {
 	return !!(ByteSet[index / 8] & (1 << (index % 8)));       // Return true if the specified bit is set in ByteSet[index]
 }
-
 
 
 // Static arrays storing SCEX data for different regions
@@ -109,7 +135,7 @@ void inject_SCEX(const char region)
 		{
 			PIN_DATA_OUTPUT;                                         // Set DATA output
 			PIN_DATA_CLEAR;                                          // Set DATA pin low
-			_delay_us(delay_between_bits);                       // Wait for specified delay between bits
+			_delay_us(DELAY_BETWEEN_BITS);                       // Wait for specified delay between bits
 		}
 
 		else
@@ -133,7 +159,7 @@ void inject_SCEX(const char region)
 				}
 			 }
 
-			while (microsec < delay_between_bits);
+			while (microsec < DELAY_BETWEEN_BITS);
 			Timer_Stop();                                       // Stop timer
 			}
             
@@ -141,7 +167,7 @@ void inject_SCEX(const char region)
 			else
 			{
 				PIN_DATA_INPUT;
-				_delay_us(delay_between_bits);
+				_delay_us(DELAY_BETWEEN_BITS);
 			}
 		}
 	}
@@ -149,7 +175,7 @@ void inject_SCEX(const char region)
 	// After injecting SCEX data, set DATA pin as output and clear (low)
 	PIN_DATA_OUTPUT;
 	PIN_DATA_CLEAR;
-	_delay_ms(delay_between_injections);
+	_delay_ms(DELAY_BETWEEN_INJECTIONS);
 }
 
 int main()
@@ -160,14 +186,24 @@ int main()
 	uint8_t bitbuf = 0;
 	uint8_t bitpos = 0;
 	uint8_t scpos = 0;                                     // scbuf position
-	uint16_t highs = 0, lows = 0;                          //highs = 0,
+	uint16_t lows = 0;                          //highs = 0,
 
 
+//#ifdef SCEA
+//const char region[3] = {'a', 'a', 'a'};
+//#endif
+//
+//#ifdef SCEE
+//const char region[3] = {'e', 'e', 'e'};
+//#endif
+//
+//#ifdef SCEI
+//const char region[3] = {'i', 'i', 'i'};
+//#endif
 
- 
-	#ifdef AUTOREGION
-	 const char region[3] = {'e', 'a', 'i'};
-	#endif
+//	#ifdef AUTOREGION
+//	 const char region[3] = {'e', 'a', 'i'};
+//	#endif
 
 	Init();
 
@@ -203,7 +239,7 @@ int main()
 	
 	do
 	{
-		if (PIN_WFCK_READ == 1) highs++;          // pas util?
+		//if (PIN_WFCK_READ == 1) highs++;          // pas util?
 		if (PIN_WFCK_READ == 0) lows++;           // good for ~5000 reads in 1s
 		_delay_us(200);
 	}
@@ -303,7 +339,7 @@ int main()
 		}
 		// hysteresis value "optimized" using very worn but working drive on ATmega328 @ 16Mhz
 		// should be fine on other MCUs and speeds, as the PSX dictates SUBQ rate
-		if (hysteresis >= hysteresis_max)
+		if (hysteresis >= HYSTERESIS_MAX)
 		{
 			// If the read head is still here after injection, resending should be quick.
 			// Hysteresis naturally goes to 0 otherwise (the read head moved).
@@ -322,12 +358,12 @@ int main()
 				PIN_WFCK_CLEAR;                           // SET WFCK pin pul down
 			}
 			
-			_delay_ms(delay_between_injections);      // HC-05 waits for a bit of silence (pin low) before it begins decoding.
+			_delay_ms(DELAY_BETWEEN_INJECTIONS);      // HC-05 waits for a bit of silence (pin low) before it begins decoding.
 
 	    // inject symbols now. 2 x 3 runs seems optimal to cover all boards
 			for (uint8_t scex = 0; scex < 2; scex++)          
 			{
-				inject_SCEX(region[scex]);            // If wfck_mode is fals (oldmode)
+				inject_SCEX(region[scex]);            // 
 			}
 
 			if (!wfck_mode)                           // Set WFCK pin input

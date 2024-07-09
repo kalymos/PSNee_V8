@@ -1,5 +1,115 @@
-#pragma once
 
+
+
+//void Timer_Start(void);
+//void Timer_Stop(void);
+////#include <avr/interrupt.h>
+////#include <avr/sfr_defs.h>
+////#include <util/delay.h>
+//
+//extern volatile uint32_t microsec;
+//extern volatile uint16_t millisec;
+//extern volatile boolean wfck_mode;
+//
+//extern const uint16_t DELAY_BETWEEN_BITS;
+//extern const uint8_t DELAY_BETWEEN_INJECTIONS;
+//extern const char region[3];
+//
+////#ifdef SCEI
+////const char region[3] = {'i', 'i', 'i'};
+////#endif
+//
+//// borrowed from AttyNee. Bitmagic to get to the SCEX strings stored in flash (because Harvard architecture)
+//// Read a specific bit from an array of bytes
+//uint8_t readBit(uint8_t index, const uint8_t * ByteSet)
+//{
+//  return !!(ByteSet[index / 8] & (1 << (index % 8)));       // Return true if the specified bit is set in ByteSet[index]
+//}
+//
+//
+//// Static arrays storing SCEX data for different regions
+//void inject_SCEX(const char region)
+//{
+//  static const uint8_t SCEEData[] = {
+//    0b01011001,
+//    0b11001001,
+//    0b01001011,
+//    0b01011101,
+//    0b11101010,
+//    0b00000010
+//  };
+//  
+//  static const uint8_t SCEAData[] = {
+//    0b01011001,
+//    0b11001001,
+//    0b01001011,
+//    0b01011101,
+//    0b11111010,
+//    0b00000010
+//  };
+//  
+//  static const uint8_t SCEIData[] = {
+//    0b01011001,
+//    0b11001001,
+//    0b01001011,
+//    0b01011101,
+//    0b11011010,
+//    0b00000010
+//  };
+//
+//  // pinMode(data, OUTPUT) is used more than it has to be but that's fine. 
+//  
+//  // Iterate through 44 bits of SCEX data
+//  for (uint8_t bit_counter = 0; bit_counter < 44; bit_counter++)
+//  {
+//    // Check if the current bit is 0
+//    if (readBit(bit_counter, region == 'e' ? SCEEData : region == 'a' ? SCEAData : SCEIData) == 0)
+//    {
+//      PIN_DATA_OUTPUT;                                         // Set DATA output
+//      PIN_DATA_CLEAR;                                          // Set DATA pin low
+//      _delay_us(DELAY_BETWEEN_BITS);                       // Wait for specified delay between bits
+//    }
+//
+//    else
+//    {
+//      // modulate DATA pin based on WFCK_READ
+//      if (wfck_mode)                                      // If wfck_mode is true(pu22mode)
+//      {
+//        PIN_DATA_OUTPUT;                                    // Set DATA output
+//        Timer_Start();                                  // Start timer for precise timing
+//       do
+//       {
+//         // read wfck pin
+//        if(PIN_WFCK_READ)
+//        {
+//          PIN_DATA_SET;                                   // Set DATA pin high
+//        }
+//
+//        else
+//        {
+//          PIN_DATA_CLEAR;                                 // Set DATA pin low
+//        }
+//       }
+//
+//      while (microsec < DELAY_BETWEEN_BITS);
+//      Timer_Stop();                                       // Stop timer
+//      }
+//            
+//            // PU-18 or lower mode
+//      else
+//      {
+//        PIN_DATA_INPUT;
+//        _delay_us(DELAY_BETWEEN_BITS);
+//      }
+//    }
+//  }
+//
+//  // After injecting SCEX data, set DATA pin as output and clear (low)
+//  PIN_DATA_OUTPUT;
+//  PIN_DATA_CLEAR;
+//  _delay_ms(DELAY_BETWEEN_INJECTIONS);
+//}
+#pragma once
 #ifdef BIOS_PATCH
 
 void Timer_Start(void);
