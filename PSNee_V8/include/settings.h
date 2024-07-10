@@ -18,31 +18,16 @@
 
 
 
-#if !defined(UC_ALL) && !defined(PAL_FAT) && !defined(SCPH_103) && \
-    !defined(SCPH_102) && !defined(SCPH_100) && !defined(SCPH_7000_9000) && \
-    !defined(SCPH_5500) && !defined(SCPH_3500_5000) && !defined(SCPH_3000) && \
-    !defined(SCPH_1000)
- #error "Console not selected! Please uncoment #define with SCPH model number."
-#elif !(defined(UC_ALL) ^ defined(PAL_FAT) ^ defined(SCPH_103) ^ \
-      defined(SCPH_102) ^ defined(SCPH_100) ^ defined(SCPH_7000_9000) ^ \
-      defined(SCPH_5500) ^ defined(SCPH_3500_5000) ^ defined(SCPH_3000) ^ \
-      defined(SCPH_1000))
- #error "May be selected only one console! Please check #define with SCPH model number."
-#endif
-
 #ifdef SCPH_xxx1
 #define SCEA
-//    const char region[3] = {'a', 'a', 'a'};
 #endif
 
 #ifdef SCPH_xxx2
 #define SCEE
-//    const char region[3] = {'e', 'e', 'e'};
 #endif
 
 #ifdef SCPH_103
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_102
@@ -52,7 +37,6 @@
 #define CHECKPOINT 83900
 #define TRIGGER 48
 #define SCEE
- //   const char region[3] = {'e', 'e', 'e'};
 #endif
 
 #ifdef SCPH_100
@@ -62,7 +46,6 @@
 #define CHECKPOINT 83900
 #define TRIGGER 48
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_7000_9000
@@ -72,63 +55,58 @@
 #define CHECKPOINT 75270
 #define TRIGGER 16
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_5500
 #define BIOS_PATCH
-#define LOW_TRIGGER
 #define HOLD _delay_us(2.85)
 #define PATCHING _delay_us(0.1)
 #define CHECKPOINT 76130
 #define TRIGGER 21
+#define LOW_TRIGGER
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_3500_5000
 #define BIOS_PATCH
-#define LOW_TRIGGER
 #define HOLD _delay_us(2.85)
 #define PATCHING _delay_us(0.1)
 #define CHECKPOINT 75260
 #define TRIGGER 21
+#define LOW_TRIGGER
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_3000
 #define BIOS_PATCH                                                    
-#define HIGH_PATCH                                                    
-#define DOUBLE_PATCH 
 #define CHECKPOINT 83000      
 #define TRIGGER 60
 #define HOLD _delay_us(2.75)
 #define PATCHING _delay_us(0.1)
-#define LOW_TRIGGER2
+#define HIGH_PATCH                                                    
+//#define DOUBLE_PATCH 
+//#define LOW_TRIGGER2
 #define CHECKPOINT2 253300
 #define TRIGGER2 43
 #define HOLD2 _delay_us(2.88)
 #define PATCHING2 _delay_us(0.15)
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCPH_1000
 #define BIOS_PATCH
-#define HIGH_PATCH
-#define DOUBLE_PATCH
 #define CHECKPOINT 83000
 #define TRIGGER 92
 #define HOLD _delay_us(2.7)
 #define PATCHING _delay_us(0.1)
-#define LOW_TRIGGER2
+#define HIGH_PATCH
+//#define DOUBLE_PATCH
+//#define LOW_TRIGGER2
 #define CHECKPOINT2 272800
 #define TRIGGER2 71
 #define HOLD2 _delay_us(2.88)
 #define PATCHING2 _delay_us(0.15)
 #define SCEI
-//    const char region[3] = {'i', 'i', 'i'};
 #endif
 
 #ifdef SCEA
@@ -141,4 +119,16 @@ const char region[3] = {'e', 'e', 'e'};
 
 #ifdef SCEI
 const char region[3] = {'i', 'i', 'i'};
+#endif
+
+#if !defined(UC_ALL) && !defined(PAL_FAT) && !defined(SCPH_103) && \
+    !defined(SCPH_102) && !defined(SCPH_100) && !defined(SCPH_7000_9000) && \
+    !defined(SCPH_5500) && !defined(SCPH_3500_5000) && !defined(SCPH_3000) && \
+    !defined(SCPH_1000)
+ #error "Console not selected! Please uncoment #define with SCPH model number."
+#elif !(defined(UC_ALL) ^ defined(PAL_FAT) ^ defined(SCPH_103) ^ \
+      defined(SCPH_102) ^ defined(SCPH_100) ^ defined(SCPH_7000_9000) ^ \
+      defined(SCPH_5500) ^ defined(SCPH_3500_5000) ^ defined(SCPH_3000) ^ \
+      defined(SCPH_1000))
+ #error "May be selected only one console! Please check #define with SCPH model number."
 #endif

@@ -19,8 +19,8 @@
 //   If a BIOS checksum is specified, it is more important than the SCPH model number!
 //------------------------------------------------------------------------------------------------	
 
-//#define SCPH_xxx1           // Use for all NTSC-U/C models. No BIOS patching needed.
-//#define SCPH_xxx2          // Use for all PAL FAT models. No BIOS patching needed.
+//#define SCPH_xxx1        // Use for all NTSC-U/C models. No BIOS patching needed.
+//#define SCPH_xxx2        // Use for all PAL FAT models. No BIOS patching needed.
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
 //#define SCPH_100         // DX - D0, AX - A7. BIOS ver. 4.3j, CRC F2AF798B
@@ -35,7 +35,7 @@
 //------------------------------------------------------------------------------------------------
 
 //#define AUTOREGION         // If ensable, send all SCEX codes, instead of the code selected model.
-#define PATCH_SW           // Enables hardware support for disabling BIOS patching.
+#define PATCH_SWICHE           // Enables hardware support for disabling BIOS patching.
 #define LED_RUN
 
 //------------------------------------------------------------------------------------------------
@@ -59,6 +59,7 @@ volatile uint16_t millisec = 0;
 
 //Flag initializing for automatic console generation selection 0 = old, 1 = pu-22 end  ++
 volatile boolean wfck_mode = 0;
+
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -85,6 +86,27 @@ void Timer_Stop()
   count_isr = 0;
   microsec = 0;
   millisec = 0;
+}
+
+void Init()
+{
+  #ifdef ATmega328_168
+                                                           
+    TCNT0 = 0x00;  OCR0A = 159;                                                         //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+    TCCR0A |= (1<<WGM01);                                                //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+    TCCR0B |= (1<<CS00);                                                 /*TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+                                                                          | Waveform Generation Mode, Mode 2 CTC*/
+  #endif
+  
+  #ifdef PATCH_SW
+   PIN_SWITCH_INPUT
+   PIN_SWITCH_SET;
+  #endif
+
+  PIN_LED_OUTPUT;
+  GLOBAL_INTERRUPT_ENABLE;
+  PIN_SQCK_INPUT;
+  PIN_SUBQ_INPUT;                              
 }
 
 // borrowed from AttyNee. Bitmagic to get to the SCEX strings stored in flash (because Harvard architecture)
@@ -188,33 +210,16 @@ int main()
 	uint8_t scpos = 0;                                     // scbuf position
 	uint16_t lows = 0;                          //highs = 0,
 
-
-//#ifdef SCEA
-//const char region[3] = {'a', 'a', 'a'};
-//#endif
-//
-//#ifdef SCEE
-//const char region[3] = {'e', 'e', 'e'};
-//#endif
-//
-//#ifdef SCEI
-//const char region[3] = {'i', 'i', 'i'};
-//#endif
-
-//	#ifdef AUTOREGION
-//	 const char region[3] = {'e', 'a', 'i'};
-//	#endif
-
 	Init();
 
 	#ifdef LED_RUN
-	 LED_ON;
+	 PIN_LED_ON;
 	#endif
 
-	#if defined(BIOS_PATCH) && !defined(PATCH_SW)
+	#if defined(BIOS_PATCH) && !defined(PATCH_SWICHE)
 	 Bios_Patching();
-	#elif defined(BIOS_PATCH) && defined(PATCH_SW)
-	 if (SW_CHECK != 0)
+	#elif defined(BIOS_PATCH) && defined(PATCH_SWICHE)
+	 if (PIN_SWICHE_READ != 0)
 	 {
 	 	Bios_Patching();
 	 }
@@ -261,7 +266,7 @@ int main()
 	}
 
 	#ifdef LED_RUN
-	 LED_OFF;
+	 PIN_LED_OFF;
 	#endif
 
 	while(1)
@@ -346,7 +351,7 @@ int main()
 			hysteresis = 11;
 			
 			#ifdef LED_RUN
-			 LED_ON;
+			 PIN_LED_ON;
 			#endif
 
 			PIN_DATA_OUTPUT;                               // Set DATA pin output
@@ -374,7 +379,7 @@ int main()
 			PIN_DATA_INPUT;
 
 			#ifdef LED_RUN
-			 LED_OFF;
+			 PIN_LED_OFF;
 			#endif
 		}
 	}
