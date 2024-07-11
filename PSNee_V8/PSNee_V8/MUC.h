@@ -69,7 +69,7 @@
 #define PIN_AX_READ                (PIND   &   (1<<PIND2))                             
 #define PIN_AY_READ                (PIND   &   (1<<PIND3))                             
 
-// Handling the interrupt
+// Handling the external interrupt
 #define PIN_AX_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT0)
 #define PIN_AY_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT1)
 
