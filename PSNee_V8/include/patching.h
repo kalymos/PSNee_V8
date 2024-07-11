@@ -87,13 +87,13 @@ void Bios_Patching(){
 	  PIN_AY_INTERRUPT_RISING;           // Otherwise on a rising edge.
 	 #endif
 
-	while (AY_READ != 0);            // Wait for a specific state of the AY pin:
+	while (PIN_AY_READ != 0);            // Wait for a specific state of the AY pin:
 
 	Timer_Start();                   // Start a timer:
 
 	while (microsec < CHECKPOINT2);  // Wait until the number of microseconds elapsed reaches a value defined by CHECKPOINT2.
 	Timer_Stop();                    // Stop the timer.
-	AY_INTERRUPT_ENABLE;             // Enable the interrupt for the AY pin.
+	PIN_AY_INTERRUPT_ENABLE;             // Enable the interrupt for the AY pin.
 
 	while (patch != 2);              // Wait for the second stage of the patch to complete:
 

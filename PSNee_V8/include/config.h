@@ -70,17 +70,17 @@
 #define PIN_AY_READ                (PIND   &   (1<<PIND3))                             
 
 // Handling the interrupt
-#define PIN_AX_INTERRUPT_ENABLE     EIMSK  =   (1<<INT0)
-#define PIN_AY_INTERRUPT_ENABLE     EIMSK  =   (1<<INT1)
+#define PIN_AX_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT0)
+#define PIN_AY_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT1)
 
 #define PIN_AX_INTERRUPT_DISABLE    EIMSK  &= ~(1<<INT0)
 #define PIN_AY_INTERRUPT_DISABLE    EIMSK  &= ~(1<<INT1)
 
-#define PIN_AX_INTERRUPT_RISING     EICRA  =   (1<<ISC01)|(1<<ISC00)
-#define PIN_AY_INTERRUPT_RISING     EICRA  =   (1<<ISC11)|(1<<ISC10)
+#define PIN_AX_INTERRUPT_RISING     EICRA  |=  (1<<ISC01)|(1<<ISC00)
+#define PIN_AY_INTERRUPT_RISING     EICRA  |=  (1<<ISC11)|(1<<ISC10)
 
-#define PIN_AX_INTERRUPT_FALLING    EICRA  =   (1<<ISC01)
-#define PIN_AY_INTERRUPT_FALLING    EICRA  =   (1<<ISC11)
+#define PIN_AX_INTERRUPT_FALLING    EICRA  |=  (1<<ISC01)
+#define PIN_AY_INTERRUPT_FALLING    EICRA  |=  (1<<ISC11)
 
 // Handling and reading the switch pin for patch BIOS
 #define PIN_SWITCH_INPUT            DDRD   &= ~(1<<DDD5)                              
