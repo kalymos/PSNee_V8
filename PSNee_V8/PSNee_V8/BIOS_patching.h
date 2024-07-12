@@ -8,7 +8,7 @@ void Timer_Stop(void);
 
 extern volatile uint8_t count_isr;
 extern volatile uint32_t microsec;
-extern volatile uint16_t millisec;
+
 
 volatile uint8_t impulse = 0;
 volatile uint8_t patch = 0;
@@ -86,11 +86,9 @@ void Bios_Patching(){
 	  #else
 	  PIN_AY_INTERRUPT_RISING;           
 	 #endif
-
+   
 	  while (PIN_AY_READ != 0);             // Wait for it to go low
-
 	  Timer_Start();                   
-
 	  while (microsec < CHECKPOINT2);     // Wait until the number of microseconds elapsed reaches a value defined by CHECKPOINT2.
 	  Timer_Stop();                       
 	  PIN_AY_INTERRUPT_ENABLE;            
