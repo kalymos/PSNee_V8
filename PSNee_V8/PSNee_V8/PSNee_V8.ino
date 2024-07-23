@@ -8,8 +8,8 @@
 //                         Select your chip
 //------------------------------------------------------------------------------------------------
 
-//#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
-#define ATmega32U4_16U4
+#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
+//#define ATmega32U4_16U4
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
@@ -27,11 +27,11 @@
 //------------------------------------------------------------------------------------------------
 
 //#define SCPH_xxx1        // Use for all NTSC-U/C models. No BIOS patching needed.
-//define SCPH_xxx2        // Use for all PAL FAT models. No BIOS patching needed.
+#define SCPH_xxx2        // Use for all PAL FAT models. No BIOS patching needed.
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
 //#define SCPH_100         // DX - D0, AX - A7. BIOS ver. 4.3j, CRC F2AF798B
-#define SCPH_7000_9000  // DX - D0, AX - A7. BIOS ver. 4.0j, CRC EC541CD0
+//#define SCPH_7000_9000  // DX - D0, AX - A7. BIOS ver. 4.0j, CRC EC541CD0
 //#define SCPH_5500        // DX - D0, AX - A5. BIOS ver. 3.0j, CRC FF3EEB8C
 //#define SCPH_3500_5000   // DX - D0, for 40-pin BIOS: AX - A4, for 32-pin BIOS: AX - A5. BIOS ver. 2.2j, CRC 24FC7E17 | 2.1j, CRC BC190209
 //#define SCPH_3000        // DX - D5, for 40-pin BIOS: AX - A6, AY - A7, for 32-pin BIOS: AX - A7, AY - A8. BIOS ver. 1.1j, CRC 3539DEF6
@@ -80,30 +80,36 @@ ISR(TIMER0_COMPA_vect) {
 
 //Timer register reset function
 void Timer_Start() {
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4)
   TIMER_TCNT_CLEAR;
-  TIMER_TIFR_CLEAR;
   TIMER_INTERRUPT_ENABLE;
+  #if defined(BIOS_PATCH)
+    TIMER_TIFR_CLEAR;
+  #endif
+#endif
 }
 
 //Function to stop timer registers, and reset time counters
 void Timer_Stop() {
-  TIMER_INTERRUPT_DISABLE;
-  TIMER_TCNT_CLEAR;
+  
+  #if defined(ATmega328_168) || defined(ATmega32U4_16U4)
+    TIMER_INTERRUPT_DISABLE;
+    TIMER_TCNT_CLEAR;
+  #endif
   count_isr = 0;
   microsec = 0;
   millisec = 0;
 }
 
 void Init() {
-
-#ifdef ATmega328_168
-  TIMER_CR_R;
-  OUTPUT_CR_A;
-  TIMER_CCR_A;
-  TIMER_CCR_B;
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4)
+  TIMER_TCNT_CLEAR;
+  SET_OCROA_DIV;
+  SET_TIMER_TCCROA;
+  SET_TIMER_TCCROB;
 #endif
 
-#ifdef PATCH_SW
+#if defined(PATCH_SW) && defined(BIOS_PATCH)
   PIN_SWITCH_INPUT;
   PIN_SWITCH_SET;
 #endif

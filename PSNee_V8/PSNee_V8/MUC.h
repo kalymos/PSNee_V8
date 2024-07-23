@@ -4,10 +4,10 @@
 
 
 #define F_CPU 16000000L
-#define TIMER_CR_R                  TCNT0  =   0x00;            //TCNT0 - Timer/Counter Register
-#define OUTPUT_CR_A                 OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
-#define TIMER_CCR_A                 TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
-#define TIMER_CCR_B                 TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+#define TIMER_TCNT_CLEAR            TCNT0  =    0x00            //TCNT0 - Timer/Counter Register
+#define SET_OCROA_DIV               OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+#define SET_TIMER_TCCROA            TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+#define SET_TIMER_TCCROB            TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
                                                                 //Waveform Generation Mode, Mode 2 CTC
 
 
@@ -60,7 +60,7 @@
 #define TIMER_INTERRUPT_DISABLE     TIMSK0 &= ~(1<<OCIE0A)
 
 // BIOS timer clear
-#define TIMER_TCNT_CLEAR            TCNT0  =    0x00
+
 #define TIMER_TIFR_CLEAR            TIFR0  |=  (1<<OCF0A)
 
 // Pins input
@@ -101,10 +101,10 @@
 
 
 #define F_CPU 16000000L
-#define TIMER_CR_R                  TCNT0  =   0x00;            //TCNT0 - Timer/Counter Register
-#define OUTPUT_CR_A                 OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
-#define TIMER_CCR_A                 TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
-#define TIMER_CCR_B                 TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+#define TIMER_TCNT_CLEAR            TCNT0  =   0x00;            //TCNT0 - Timer/Counter Register
+#define SET_OCROA_DIV               OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+#define SET_TIMER_TCCROA            TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+#define SET_TIMER_TCCROB            TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
                                                                 //Waveform Generation Mode, Mode 2 CTC
 
 
