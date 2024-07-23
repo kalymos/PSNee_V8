@@ -8,8 +8,9 @@
 //                         Select your chip
 //------------------------------------------------------------------------------------------------
 
-#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
+//#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
 //#define ATmega32U4_16U4
+#define ATtiny85_45_25
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
@@ -80,7 +81,7 @@ ISR(TIMER0_COMPA_vect) {
 
 //Timer register reset function
 void Timer_Start() {
-#if defined(ATmega328_168) || defined(ATmega32U4_16U4)
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
   TIMER_TCNT_CLEAR;
   TIMER_INTERRUPT_ENABLE;
   #if defined(BIOS_PATCH)
@@ -92,7 +93,7 @@ void Timer_Start() {
 //Function to stop timer registers, and reset time counters
 void Timer_Stop() {
   
-  #if defined(ATmega328_168) || defined(ATmega32U4_16U4)
+  #if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
     TIMER_INTERRUPT_DISABLE;
     TIMER_TCNT_CLEAR;
   #endif
@@ -102,7 +103,7 @@ void Timer_Stop() {
 }
 
 void Init() {
-#if defined(ATmega328_168) || defined(ATmega32U4_16U4)
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
   TIMER_TCNT_CLEAR;
   SET_OCROA_DIV;
   SET_TIMER_TCCROA;
