@@ -4,10 +4,10 @@
 
 
 #define F_CPU 16000000L
-#define TIMER_TCNT_CLEAR            TCNT0  =    0x00            //TCNT0 - Timer/Counter Register
-#define SET_OCROA_DIV               OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
-#define SET_TIMER_TCCROA            TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
-#define SET_TIMER_TCCROB            TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+#define TIMER_TCNT_CLEAR            TCNT0   =   0x00            //TCNT0 - Timer/Counter Register
+#define SET_OCROA_DIV               OCR0A   =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+#define SET_TIMER_TCCROA            TCCR0A |=  (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+#define SET_TIMER_TCCROB            TCCR0B |=  (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
                                                                 //Waveform Generation Mode, Mode 2 CTC
 
 
@@ -87,8 +87,8 @@
 #define PIN_AX_INTERRUPT_RISING     EICRA  |=  (1<<ISC01)|(1<<ISC00)
 #define PIN_AY_INTERRUPT_RISING     EICRA  |=  (1<<ISC11)|(1<<ISC10)
 
-#define PIN_AX_INTERRUPT_FALLING    EICRA  |=  (1<<ISC01)
-#define PIN_AY_INTERRUPT_FALLING    EICRA  |=  (1<<ISC11)
+#define PIN_AX_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC00)) | (1<<ISC01))
+#define PIN_AY_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC10)) | (1<<ISC11))
 
 // Handling and reading the switch pin for patch BIOS
 #define PIN_SWITCH_INPUT            DDRD   &= ~(1<<DDD5)                              
@@ -101,10 +101,10 @@
 
 
 #define F_CPU 16000000L
-#define TIMER_TCNT_CLEAR            TCNT0  =   0x00;            //TCNT0 - Timer/Counter Register
-#define SET_OCROA_DIV               OCR0A  =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
-#define SET_TIMER_TCCROA            TCCR0A |= (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
-#define SET_TIMER_TCCROB            TCCR0B |= (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
+#define TIMER_TCNT_CLEAR            TCNT0   =   0x00;            //TCNT0 - Timer/Counter Register
+#define SET_OCROA_DIV               OCR0A   =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
+#define SET_TIMER_TCCROA            TCCR0A |=  (1 << WGM01);     //TCCR0A – Timer/Counter Control Register A. turn on CTC mode, WGM01
+#define SET_TIMER_TCCROB            TCCR0B |=  (1 << CS00);      //TCCR0B – Timer/Counter Control Register B,  CS00: Clock Select,  clk I/O
                                                                 //Waveform Generation Mode, Mode 2 CTC
 
 
@@ -184,8 +184,8 @@
 #define PIN_AX_INTERRUPT_RISING     EICRA  |=  (1<<ISC11)|(1<<ISC10)
 #define PIN_AY_INTERRUPT_RISING     EICRA  |=  (1<<ISC01)|(1<<ISC00)
 
-#define PIN_AX_INTERRUPT_FALLING    EICRA  |=  (1<<ISC11)
-#define PIN_AY_INTERRUPT_FALLING    EICRA  |=  (1<<ISC01)
+#define PIN_AX_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC10)) | (1<<ISC11))
+#define PIN_AY_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC00)) | (1<<ISC01))
 
 // Handling and reading the switch pin for patch BIOS
 #define PIN_SWITCH_INPUT            DDRC   &= ~(1<<DDC6)                              
