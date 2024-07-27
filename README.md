@@ -15,9 +15,13 @@ PsNee V8.5 supports the following MCU's:
 
 ## Installation
 Place the cor folder in your ~arduino15/packages/
+
 In the Arduino IDE choose tools->board->PSNee and the appropriate board
+
 Choosing your ISP programmer
+
 If you need to change fuses tool->burn bootloader (If you get an error message that it could not burn the bootloader, ignore it.)
+
 To inject the code into the board, sketch->upload using a programmer
 
 
