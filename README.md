@@ -29,12 +29,10 @@ Tool->burn bootloader (You get an error message that it could not burn the bootl
 
 #In the PSNee_V8.ino file choose your board, and the model of your console
 
-
+![Console](images/console.png)
 
 To inject the code into the board
 Sketch->upload using a programmer
-
-Use the programmer to flash MCU. 
 **Flashing via COM port is not supported.**
 
 ### Fuses
