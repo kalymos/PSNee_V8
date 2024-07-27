@@ -13,8 +13,7 @@ extern volatile uint32_t microsec;
 volatile uint8_t impulse = 0;
 volatile uint8_t patch = 0;
 
-// ISR for AX (INT0_vect):
-ISR(INT0_vect) {
+ISR(PIN_AX_INTERRUPT_VECTOR) {
 	impulse++;                         
 	if (impulse == TRIGGER){           // If impulse reaches the value defined by TRIGGER, the following actions are performed:
 		HOLD;                            
@@ -34,10 +33,10 @@ ISR(INT0_vect) {
 	}
 }
 
-// If DOUBLE_PATCH is defined
-#ifdef HIGH_PATCH                   
-// ISR for AY (INT1_vect):
-ISR(INT1_vect){
+
+#ifdef HIGH_PATCH 
+
+ISR(PIN_AY_INTERRUPT_VECTOR){
 
 	impulse++;                         
 	if (impulse == TRIGGER2)           // If impulse reaches the value defined by TRIGGER2, the following actions are performed:

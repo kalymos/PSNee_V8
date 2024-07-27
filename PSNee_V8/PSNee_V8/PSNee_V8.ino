@@ -8,9 +8,9 @@
 //                         Select your chip
 //------------------------------------------------------------------------------------------------
 
-//#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
+#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
 //#define ATmega32U4_16U4
-#define ATtiny85_45_25
+//#define ATtiny85_45_25
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
@@ -68,11 +68,11 @@ volatile uint16_t millisec = 0;
 //Flag initializing for automatic console generation selection 0 = old, 1 = pu-22 end  ++
 volatile boolean wfck_mode = 0;
 
-//Counter increment function
-ISR(TIMER0_COMPA_vect) {
-  microsec += 10;                    // Increment microseconds by 10 for timing purposes
-  count_isr++;                       // Increment ISR count
-  if (count_isr == 100)              // If ISR count reaches 100, increment milliseconds and reset ISR count
+//Counter increment function  
+ISR(CTC_TIMER_VECTOR) {
+  microsec += 10;                    
+  count_isr++;                  
+  if (count_isr == 100)              
   {
     millisec++;
     count_isr = 0;
