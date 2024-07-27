@@ -68,7 +68,7 @@ volatile uint16_t millisec = 0;
 //Flag initializing for automatic console generation selection 0 = old, 1 = pu-22 end  ++
 volatile boolean wfck_mode = 0;
 
-//Counter increment function  
+//Counter increment function  Fuses
 ISR(CTC_TIMER_VECTOR) {
   microsec += 10;                    
   count_isr++;                  
