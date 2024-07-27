@@ -27,9 +27,9 @@ If you need to change fuses
 Tool->Fuses 
 Tool->burn bootloader (You get an error message that it could not burn the bootloader, ignore it.)
 
-In the PSNee_V8.ino file choose your board, and the model of your console
+#In the PSNee_V8.ino file choose your board, and the model of your console
 
-![Console](images/console.png)
+
 
 To inject the code into the board
 Sketch->upload using a programmer
