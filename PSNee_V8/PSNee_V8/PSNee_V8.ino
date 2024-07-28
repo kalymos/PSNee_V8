@@ -11,7 +11,7 @@
 //#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
 //#define ATmega32U4_16U4
 //#define ATtiny85_45_25
-//#define LGT8F328P //!!not tested!!
+#define LGT8F328P //!!not tested!!
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
@@ -82,7 +82,7 @@ ISR(CTC_TIMER_VECTOR) {
 
 //Timer register reset function
 void Timer_Start() {
-#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25) || defined(LGT8F328P)
   TIMER_TCNT_CLEAR;
   TIMER_INTERRUPT_ENABLE;
   #if defined(BIOS_PATCH)
@@ -94,7 +94,7 @@ void Timer_Start() {
 //Function to stop timer registers, and reset time counters
 void Timer_Stop() {
   
-  #if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
+  #if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25) || defined(LGT8F328P)
     TIMER_INTERRUPT_DISABLE;
     TIMER_TCNT_CLEAR;
   #endif
@@ -104,7 +104,7 @@ void Timer_Stop() {
 }
 
 void Init() {
-#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25)
+#if defined(ATmega328_168) || defined(ATmega32U4_16U4) || defined(ATtiny85_45_25) || defined(LGT8F328P)
   TIMER_TCNT_CLEAR;
   SET_OCROA_DIV;
   SET_TIMER_TCCROA;
@@ -247,7 +247,6 @@ int main() {
   // WFCK: __-_-_-_-_-_-_-_-_-_-_-_-  // this is a PU-22 or newer board!
   // typical readouts PU-22: highs: 2449 lows: 2377
   do {
-    //if (PIN_WFCK_READ == 1) highs++;          // pas util?
     if (PIN_WFCK_READ == 0) lows++;             // good for ~5000 reads in 1s
     _delay_us(200);
   } 
