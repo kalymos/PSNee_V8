@@ -2,7 +2,6 @@
 
 #ifdef ATmega328_168
 
-
 #define F_CPU 16000000L
 #define TIMER_TCNT_CLEAR            TCNT0   =   0x00             //TCNT0 - Timer/Counter Register
 #define SET_OCROA_DIV               OCR0A   =   159;             //OCR0A – Output Compare Register A, 0x10011111, 100KHz
@@ -97,6 +96,107 @@
 #define PIN_SWITCH_INPUT            DDRD   &= ~(1<<DDD5)                              
 #define PIN_SWITCH_SET              PORTD  |=  (1<<PD5)                                
 #define PIN_SWICHE_READ            (PIND   &   (1<<PIND5))
+
+#endif
+
+#ifdef LGT8F328P
+
+#define F_CPU 32000000L
+#define TIMER_TCNT_CLEAR            TCNT0   =   0x00             
+#define SET_OCROA_DIV               OCR0A   =   319;             
+#define SET_TIMER_TCCROA            TCCR0A |=  (1 << WGM01);     
+#define SET_TIMER_TCCROB            TCCR0B |=  (1 << CS00); 
+#define CTC_TIMER_VECTOR            TIMER0_COMPA_vect            //??
+
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/sfr_defs.h>
+#include <util/delay.h>
+
+// Globale interrupt seting
+#define GLOBAL_INTERRUPT_ENABLE     SREG   |=  (1<<7)           
+#define GLOBAL_INTERRUPT_DISABLE    SREG   &= ~(1<<7)    
+
+// Handling the main pins
+
+// Main pins input
+#define PIN_DATA_INPUT              DDRB   &= ~(1<<DDB0)        
+#define PIN_WFCK_INPUT              DDRB   &= ~(1<<DDB1)       
+#define PIN_SQCK_INPUT              DDRD   &= ~(1<<DDD6)      
+#define PIN_SUBQ_INPUT              DDRD   &= ~(1<<DDD7) 
+                            
+// Main pin output
+#define PIN_DATA_OUTPUT             DDRB   |=  (1<<DDB0)       
+#define PIN_WFCK_OUTPUT             DDRB   |=  (1<<DDB1)       
+           
+// Define pull-ups and set high at the main pin
+#define PIN_DATA_SET                PORTB  |=  (1<<PB0)        
+                                                              
+             
+// Define pull-ups set down at the main pin
+#define PIN_DATA_CLEAR              PORTB  &= ~(1<<PB0)        
+#define PIN_WFCK_CLEAR              PORTB  &= ~(1<<PB1)        
+                         
+// Read the main pins
+#define PIN_SQCK_READ              (PIND   &   (1<<PIND6))         
+#define PIN_SUBQ_READ              (PIND   &   (1<<PIND7))     
+#define PIN_WFCK_READ              (PINB   &   (1<<PINB1))                                                       
+
+// Handling and use of the LED pin
+#define LED_RUN
+#define PIN_LED_OUTPUT              DDRB   |=  (1<<DDB5)                                
+#define PIN_LED_ON                  PORTB  |=  (1<<PB5)      
+#define PIN_LED_OFF                 PORTB  &= ~(1<<PB5)   
+
+// Handling the BIOS patch
+
+// BIOS interrupt seting
+#define TIMER_INTERRUPT_ENABLE      TIMSK0 |=  (1<<OCIE0A)
+#define TIMER_INTERRUPT_DISABLE     TIMSK0 &= ~(1<<OCIE0A)
+
+// BIOS timer clear
+#define TIMER_TIFR_CLEAR            TIFR0  |=  (1<<OCF0A)
+
+// Pins input
+#define PIN_AX_INPUT                DDRD   &= ~(1<<DDD2)                            
+#define PIN_AY_INPUT                DDRD   &= ~(1<<DDD3)                             
+#define PIN_DX_INPUT                DDRD   &= ~(1<<DDD4)                             
+// Pin output
+#define PIN_DX_OUTPUT               DDRD   |=  (1<<DDD4)                             
+// Define pull-ups set high 
+#define PIN_DX_SET                  PORTD  |=  (1<<PD4)                              
+// Define pull-ups set down 
+#define PIN_DX_CLEAR                PORTD  &= ~(1<<PD4)                            
+// Read pins for BIOS patch
+#define PIN_AX_READ                (PIND   &   (1<<PIND2))                             
+#define PIN_AY_READ                (PIND   &   (1<<PIND3))                             
+
+// Handling the external interrupt
+#define PIN_AX_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT0)
+#define PIN_AY_INTERRUPT_ENABLE     EIMSK  |=  (1<<INT1)
+
+#define PIN_AX_INTERRUPT_DISABLE    EIMSK  &= ~(1<<INT0)
+#define PIN_AY_INTERRUPT_DISABLE    EIMSK  &= ~(1<<INT1)
+
+#define PIN_AX_INTERRUPT_RISING     EICRA  |=  (1<<ISC01)|(1<<ISC00)
+#define PIN_AY_INTERRUPT_RISING     EICRA  |=  (1<<ISC11)|(1<<ISC10)
+
+#define PIN_AX_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC00)) | (1<<ISC01))
+#define PIN_AY_INTERRUPT_FALLING   (EICRA   =  (EICRA & ~(1<<ISC10)) | (1<<ISC11))
+
+#define PIN_AX_INTERRUPT_VECTOR        INT0_vect              
+#define PIN_AY_INTERRUPT_VECTOR        INT1_vect    
+
+// Handling and reading the switch pin for patch BIOS
+#define PIN_SWITCH_INPUT            DDRD   &= ~(1<<DDD5)                              
+#define PIN_SWITCH_SET              PORTD  |=  (1<<PD5)                                
+#define PIN_SWICHE_READ            (PIND   &   (1<<PIND5))
+
+
+
 
 #endif
 

@@ -9,8 +9,9 @@
 //------------------------------------------------------------------------------------------------
 
 //#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
-#define ATmega32U4_16U4
+//#define ATmega32U4_16U4
 //#define ATtiny85_45_25
+//#define LGT8F328P //!!not tested!!
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
