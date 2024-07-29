@@ -38,8 +38,5 @@ Before flashing the MCU, you need to configure the fuses.
 - Fuses for JAP_FAT consoles: **H: DF, L: EE, E: FF**  
 - Fuses for all other consoles: **H: DF, L: FF, E: FF**  
 
-## Installation diagram
-![Board](images/Nano.png)
-
 ## Model tested
 ![test](images/model_tested.png)
