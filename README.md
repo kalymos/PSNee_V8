@@ -39,7 +39,7 @@ Before flashing the MCU, you need to configure the fuses.
 - Fuses for all other consoles: **H: DF, L: FF, E: FF**  
 
 ## Installation diagram
-![Board](images/PSNee_V8_pinout.png)
+![Board](images/Nano.png)
 
-## model tested
+## Model tested
 ![test](images/model_tested.png)
