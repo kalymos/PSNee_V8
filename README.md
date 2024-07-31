@@ -31,12 +31,6 @@ Tool->burn bootloader (You get an error message that it could not burn the bootl
 
 To inject the code into the board
 Sketch->upload using a programmer
-**Flashing via COM port is not supported.**
-
-### Fuses
-Before flashing the MCU, you need to configure the fuses.  
-- Fuses for JAP_FAT consoles: **H: DF, L: EE, E: FF**  
-- Fuses for all other consoles: **H: DF, L: FF, E: FF**  
 
 ## Model tested
 ![test](images/model_tested.png)
