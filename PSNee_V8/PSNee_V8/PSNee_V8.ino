@@ -1,17 +1,11 @@
-// PSNee V8 - Ultimate PSX unlocker.   /ver. 8.0.1
-// Developed by brill & postal2201, based on PSNee V7 open source project.   /Emu-land.net
-
-
-//Configuring the clock speed and associated registers.  F_CPU / (TCCR0B |= (1<<CS00) *(OCR0A = 159 +1) = 16000000 /(0 * (160)) = 100KHz
-
 //------------------------------------------------------------------------------------------------
 //                         Select your chip
 //------------------------------------------------------------------------------------------------
 
-#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
+//#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
 //#define ATmega32U4_16U4
 //#define ATtiny85_45_25
-//#define LGT8F328P //!!not tested!!
+#define LGT8F328P //!!not tested!!
 //#define ATtiny88_48 //!!not tested!!
 /*  PinVCC-3.5v, PinGND-GND, 
     Pin2-BIOS AX, Pin3-BIOS AY, 
@@ -44,7 +38,6 @@
 //                         Options
 //------------------------------------------------------------------------------------------------
 
-//#define AUTOREGION         // If ensable, send all SCEX codes, instead of the code selected model.
 //#define PATCH_SWICHE  // Enables hardware support for disabling BIOS patching.
 //#define LED_RUN
 
@@ -55,7 +48,6 @@
 #include "MUC.h"
 #include "settings.h"
 #include "BIOS_patching.h"
-
 
 //Initializing values ​​for region code injection timing
 #define DELAY_BETWEEN_BITS 4000      // 250 bits/s (microseconds) (ATtiny 8Mhz works from 3950 to 4100) PU-23 PU-22 MAX 4250 MIN 3850

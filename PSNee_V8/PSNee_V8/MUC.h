@@ -1,3 +1,5 @@
+//Configuring the clock speed and associated registers.  F_CPU / (TCCR0B |= (1<<CS00) *(OCR0A = 159 +1) = 16000000 /(0 * (160)) = 100KHz
+
 #pragma once
 
 #ifdef ATmega328_168
