@@ -474,33 +474,33 @@
 // Handling the main pins
 
 // Main pins input
-#define PIN_DATA_INPUT              PORTx.DIR &= ~(1<<DIRn)        
-#define PIN_WFCK_INPUT              PORTx.DIR &= ~(1<<DIRn)        // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,
-#define PIN_SQCK_INPUT              PORTx.DIR &= ~(1<<DIRn)        // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0                     
-#define PIN_SUBQ_INPUT              PORTx.DIR &= ~(1<<DIRn)  
+#define PIN_DATA_INPUT              PORTA.DIR &= ~PIN2_bm       
+#define PIN_WFCK_INPUT              PORTA.DIR &= ~PIN1_bm         // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,
+#define PIN_SQCK_INPUT              PORTA.DIR &= ~PIN4_bm         // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0                     
+#define PIN_SUBQ_INPUT              PORTA.DIR &= ~PIN3_bm   
                             
 // Main pin output
-#define PIN_DATA_OUTPUT             PORTx.DIR |= (1<<DIRn)        // Create a mask (1<<0) with the first bit at 1 b00000001,     
-#define PIN_WFCK_OUTPUT             PORTx.DIR |= (1<<DIRn)        // |= updates the DDRB register with the OR operator and the mask, DDRB bxxxxxxxx OR mask b00000001 = bxxxxxxx1
+#define PIN_DATA_OUTPUT             PORTA.DIR |= PIN2_bm         // Create a mask (1<<0) with the first bit at 1 b00000001,     
+#define PIN_WFCK_OUTPUT             PORTA.DIR |= PIN1_bm         // |= updates the DDRB register with the OR operator and the mask, DDRB bxxxxxxxx OR mask b00000001 = bxxxxxxx1
            
 // Define pull-ups and set high at the main pin
-#define PIN_DATA_SET                PORTx.OUT |= (1<<OUTn)        // Create a mask (1<<0) with the first bit at 1 b00000001,
+#define PIN_DATA_SET                PORTA.OUT |= PIN2_bm         // Create a mask (1<<0) with the first bit at 1 b00000001,
                                                                // |= updates the PORTB register with the OR operator and the mask, PORTB bxxxxxxxx OR mask b00000001 = bxxxxxxx1
              
 // Define pull-ups set down at the main pin
-#define PIN_DATA_CLEAR              PORTx.OUT &= ~(1<<OUTn)        // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,                    
-#define PIN_WFCK_CLEAR              PORTx.OUT &= ~(1<<OUTn)        // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0
+#define PIN_DATA_CLEAR              PORTA.OUT &= ~PIN2_bm         // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,                    
+#define PIN_WFCK_CLEAR              PORTA.OUT &= ~PIN1_bm         // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0
                          
 // Read the main pins
-#define PIN_SQCK_READ              (PORTA.IN & (1 << PINn))     // Create a mask (1<<6) with the six bit at 1 b00100000,                       
-#define PIN_SUBQ_READ              (PORTA.IN & (1 << PINn))     // compare the PINB register and the mask with the AND operator, and returns the result, PINB bxx1xxxxx AND mask b00100000 = 1                      
-#define PIN_WFCK_READ              (PORTA.IN & (1 << PINn))                                                       
+#define PIN_SQCK_READ              PORTA.IN & PIN4_bm     // Create a mask (1<<6) with the six bit at 1 b00100000,                       
+#define PIN_SUBQ_READ             PORTA.IN & PIN3_bm     // compare the PINB register and the mask with the AND operator, and returns the result, PINB bxx1xxxxx AND mask b00100000 = 1                      
+#define PIN_WFCK_READ              PORTA.IN & PIN1_bm                                                       
 
 // Handling and use of the LED pin
-//#define LED_RUN
-//#define PIN_LED_OUTPUT              DDRB   |=  (1<<DDB5)                                
-//#define PIN_LED_ON                  PORTB  |=  (1<<PB5)      
-//#define PIN_LED_OFF                 PORTB  &= ~(1<<PB5)   
+#define LED_RUN
+#define PIN_LED_OUTPUT              PORTB.DIR |= PIN2_bm                                
+#define PIN_LED_ON                  PORTB.OUT |= PIN2_bm       
+#define PIN_LED_OFF                 PORTB.OUT  &= ~PIN2_bm  
 
 // Handling the BIOS patch
 
@@ -512,39 +512,42 @@
 #define TIMER_TIFR_CLEAR            TCA0.SPLIT.INTFLAGS = TCA_SPLIT_HCMP0_bm
 
 // Pins input
-#define PIN_AX_INPUT                PORTx.DIR &= ~(1<<DIRn)                            
-#define PIN_AY_INPUT                PORTx.DIR &= ~(1<<DIRn)                             
-#define PIN_DX_INPUT                PORTx.DIR &= ~(1<<DIRn)                             
+#define PIN_AX_INPUT                PORTB.DIR &= ~PIN3_bm                             
+#define PIN_AY_INPUT                PORTA.DIR &= ~PIN7_bm                              
+#define PIN_DX_INPUT                PORTA.DIR &= ~PIN6_bm                              
 // Pin output
-#define PIN_DX_OUTPUT               PORTx.DIR |= (1<<DIRn)                             
+#define PIN_DX_OUTPUT               PORTA.DIR |= PIN6_bm                              
 // Define pull-ups set high 
-#define PIN_DX_SET                  PORTx.OUT |= (1<<OUTn)                              
+#define PIN_DX_SET                  PORTA.OUT |= PIN6_bm                               
 // Define pull-ups set down 
-#define PIN_DX_CLEAR                PORTx.OUT &= ~(1<<OUTn)                            
+#define PIN_DX_CLEAR                PORTA.OUT &= ~PIN6_bm                             
 // Read pins for BIOS patch
-#define PIN_AX_READ                (PORTA.IN & (1 << PINn))                             
-#define PIN_AY_READ                (PORTA.IN & (1 << PINn))                             
+#define PIN_AX_READ                PORTB.IN & PIN3_bm                            
+#define PIN_AY_READ                PORTA.IN & PIN6_bm                              
 
 // Handling the external interrupt
-#define PIN_AX_INTERRUPT_ENABLE     INTFLAGS  |=  (1<<INTn)
-#define PIN_AY_INTERRUPT_ENABLE     INTFLAGS  |=  (1<<INTn)
+//#define PIN_AX_INTERRUPT_ENABLE     PORTB.PIN3CTRL  |=  (1<<INTn)
+//#define PIN_AY_INTERRUPT_ENABLE     PORTA.PIN7CTRL  |=  (1<<INTn)
 
-#define PIN_AX_INTERRUPT_DISABLE    INTFLAGS  &= ~(1<<INTn)
-#define PIN_AY_INTERRUPT_DISABLE    INTFLAGS  &= ~(1<<INTn)
+#define PIN_AX_INTERRUPT_DISABLE    PORTB.PIN3CTRL = PORT_ISC_INTDISABLE_gc
+#define PIN_AY_INTERRUPT_DISABLE    PORTA.PIN7CTRL = PORT_ISC_INTDISABLE_gc
 
-#define PIN_AX_INTERRUPT_RISING     PINnCTRL  |=  (1<<ISC01)|(1<<ISC00)
-#define PIN_AY_INTERRUPT_RISING     PINnCTRL  |=  (1<<ISC11)|(1<<ISC10)
+#define PIN_AX_INTERRUPT_RISING     PORTB.PIN3CTRL = PORT_ISC_RISING_gc
+#define PIN_AY_INTERRUPT_RISING     PORTA.PIN7CTRL = PORT_ISC_RISING_gc
 
-#define PIN_AX_INTERRUPT_FALLING   (PINnCTRL   =  (PINnCTRL & ~(1<<ISC00)) | (1<<ISC01))
-#define PIN_AY_INTERRUPT_FALLING   (PINnCTRL  =  (PINnCTRL & ~(1<<ISC10)) | (1<<ISC11))
+#define PIN_AX_INTERRUPT_FALLING    PORTB.PIN3CTRL = PORT_ISC_FALLING_gc
+#define PIN_AY_INTERRUPT_FALLING    PORTA.PIN7CTRL = PORT_ISC_FALLING_gc
 
-#define PIN_AX_INTERRUPT_VECTOR        INT0_vect              
-#define PIN_AY_INTERRUPT_VECTOR        INT1_vect    
+//#define PB3_INTERRUPT PORTB.INTFLAGS & PIN3_bm
+//#define PA7_INTERRUPT PORTB.INTFLAGS & PIN7_bm
+
+#define PIN_AX_INTERRUPT_VECTOR        PORTB_PORT_vect               
+#define PIN_AY_INTERRUPT_VECTOR        PORTA_PORT_vect    
 
 // Handling and reading the switch pin for patch BIOS
-#define PIN_SWITCH_INPUT            DDRD   &= ~(1<<DDD5)                              
-#define PIN_SWITCH_SET              PORTD  |=  (1<<PD5)                                
-#define PIN_SWICHE_READ            (PIND   &   (1<<PIND5))
+#define PIN_SWITCH_INPUT            PORTA.DIR &= ~PIN5_bm                               
+#define PIN_SWITCH_SET              PORTA.OUT |= PIN5_bm                                 
+#define PIN_SWICHE_READ            PORTA.IN & PIN5_bm 
 
 #endif
 
