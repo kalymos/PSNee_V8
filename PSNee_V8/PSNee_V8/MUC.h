@@ -468,16 +468,16 @@
 #include <util/delay.h>
 
 // Globale interrupt seting
-#define GLOBAL_INTERRUPT_ENABLE     SREG   |=  (1<<7)           
-#define GLOBAL_INTERRUPT_DISABLE    SREG   &= ~(1<<7)    
+#define GLOBAL_INTERRUPT_ENABLE     CPU.SREG   |=  (1<<7)           
+#define GLOBAL_INTERRUPT_DISABLE    CPU.SREG   &= ~(1<<7)    
 
 // Handling the main pins
 
 // Main pins input
-#define PIN_DATA_INPUT              PORTA.DIR &= ~PIN2_bm       
-#define PIN_WFCK_INPUT              PORTA.DIR &= ~PIN1_bm         // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,
-#define PIN_SQCK_INPUT              PORTA.DIR &= ~PIN4_bm         // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0                     
-#define PIN_SUBQ_INPUT              PORTA.DIR &= ~PIN3_bm   
+#define PIN_DATA_INPUT              PORTA.DIR = PIN2_bm      
+#define PIN_WFCK_INPUT              PORTA.DIR = PIN1_bm         // Create a mask (1<<0) with the first bit at 1 b00000001 uses the ~ operator to perform a bit inversion b11111110,
+#define PIN_SQCK_INPUT              PORTA.DIR = PIN4_bm         // &= updates the DDRB register with the AND operator and the mask, DDRB bxxxxxxxx OR mask b11111110 = bxxxxxxx0                     
+#define PIN_SUBQ_INPUT              PORTA.DIR = PIN3_bm   
                             
 // Main pin output
 #define PIN_DATA_OUTPUT             PORTA.DIR |= PIN2_bm         // Create a mask (1<<0) with the first bit at 1 b00000001,     

@@ -5,10 +5,10 @@
 //#define ATmega328_168  // Fuses: JAP_FAT - H: DF, L: EE, E: FF; Other - H: DF, L: FF, E: FF.
 //#define ATmega32U4_16U4
 //#define ATtiny85_45_25
-#define LGT8F328P //!!not tested!!
-//#define ATtiny88_48 //!!not tested!!
+
 /*  PinVCC-3.5v, PinGND-GND, 
-    Pin2-BIOS AX, Pin3-BIOS AY, 
+    Pin2-BIOS AX, 
+    Pin3-BIOS AY, 
     Pin4-BIOS DX, Pin5-Switch*(optional),
     Pin6-SQCK, 
     Pin7-SUBQ, 
@@ -23,7 +23,7 @@
 //   If a BIOS checksum is specified, it is more important than the SCPH model number!
 //------------------------------------------------------------------------------------------------
 
-#define SCPH_xxx1        // Use for all NTSC-U/C models. No BIOS patching needed.
+//#define SCPH_xxx1        // Use for all NTSC-U/C models. No BIOS patching needed.
 //#define SCPH_xxx2        // Use for all PAL FAT models. No BIOS patching needed.
 //#define SCPH_103         // No BIOS patching needed.
 //#define SCPH_102         // DX - D0, AX - A7. BIOS ver. 4.4e, CRC 0BAD7EA9 | 4.5e, CRC 76B880E5
