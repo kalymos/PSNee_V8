@@ -340,11 +340,13 @@
 #define PIN_SUBQ_READ              (PINB   &   (1<<PINB1))                      
 #define PIN_WFCK_READ              (PINB   &   (1<<PINB4))      
 
-#defintu conais les attiny 414e TIMER_INTERRUPT_ENABLE      TIMSK |=  (1<<OCIE0A)
+#define TIMER_INTERRUPT_ENABLE      TIMSK |=  (1<<OCIE0A)
 #define TIMER_INTERRUPT_DISABLE     TIMSK &= ~(1<<OCIE0A)
 
 #if !defined(SCPH_xxx1) && !defined(SCPH_xxx2) && !defined(SCPH_103)
  #error "ATtiny85_45_25 Not compatible with BIOS patch, please choose a compatible SCPH. For example: SCPH_xxx1: SCPH_xxx2: SCPH_103"
+#endif
+
 #endif
 
 #ifdef ATtiny88_48
@@ -636,7 +638,5 @@
 #define PIN_SWITCH_INPUT            GPIOA->MODER &= ~(GPIO_MODER_MODER5)                              
 #define PIN_SWITCH_SET              GPIOA->ODR  |=  (GPIO_ODR_ODR_5)                                
 #define PIN_SWICHE_READ            (GPIOA->IDR   &   (GPIO_IDR_IDR_5))
-
-#endif
 
 #endif
