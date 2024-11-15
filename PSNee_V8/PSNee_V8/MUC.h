@@ -347,6 +347,8 @@
  #error "ATtiny85_45_25 Not compatible with BIOS patch, please choose a compatible SCPH. For example: SCPH_xxx1: SCPH_xxx2: SCPH_103"
 #endif
 
+#endif
+
 #ifdef ATtiny88_48
 
 #define F_CPU 16000000L
@@ -636,7 +638,5 @@
 #define PIN_SWITCH_INPUT            GPIOA->MODER &= ~(GPIO_MODER_MODER5)                              
 #define PIN_SWITCH_SET              GPIOA->ODR  |=  (GPIO_ODR_ODR_5)                                
 #define PIN_SWICHE_READ            (GPIOA->IDR   &   (GPIO_IDR_IDR_5))
-
-#endif
 
 #endif
